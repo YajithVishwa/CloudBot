@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "497402902653",
+    "firebase_url": "https://cloudstorage-9aca5.firebaseio.com",
+    "project_id": "cloudstorage-9aca5",
+    "storage_bucket": "cloudstorage-9aca5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497402902653:android:b9c90de02d4a93994a1914",
+        "android_client_info": {
+          "package_name": "com.yajith.cloudstorage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497402902653-32enuqjnld5kqlphn7l1rcvk896vm65s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGAGvFo9t4dIFVG8B9HdebkEyVlIKYxoc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497402902653-32enuqjnld5kqlphn7l1rcvk896vm65s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
