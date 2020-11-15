@@ -38,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     st.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
                             textToSpeech.speak("Done uploading",TextToSpeech.QUEUE_FLUSH,null);
 
                         }
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                progressDialog.dismiss();
+
             }
         }
     }
@@ -222,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     names.add(s.getName().toString());
                 }
+                Collections.shuffle(names);
                 for(String e:names)
                 {
                     textToSpeech.speak(e,TextToSpeech.QUEUE_FLUSH,null);
