@@ -57,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading");
         storageReference=firebaseStorage.getReference();
         speechRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
-        textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        textToSpeech=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status!=TextToSpeech.ERROR)
+                if(status==TextToSpeech.SUCCESS)
                 {
                     textToSpeech.setLanguage(Locale.ENGLISH);
                 }
@@ -69,13 +69,12 @@ public class MainActivity extends AppCompatActivity {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
                 intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Need to speak");
-                startActivityForResult(intent,200);*/
-                uploadfile();
+                startActivityForResult(intent,200);
             }
         });
     }
@@ -88,7 +87,39 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode==RESULT_OK&&data!=null)
             {
                 ArrayList arrayList=data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                textToSpeech.speak(arrayList.get(0).toString(), TextToSpeech.QUEUE_FLUSH, null);
+                String voice=arrayList.get(0).toString();
+                if(!voice.equals(""))
+                {
+                    if(voice.contains("download"))
+                    {
+                        String a[]=voice.split(" ");
+                        if(a.length>1)
+                        {
+                            String name=a[1];
+                            downloadfile(name);
+                        }
+                        else
+                        {
+                            textToSpeech.speak("say download filename",TextToSpeech.QUEUE_ADD,null);
+                        }
+                    }
+                    else if(voice.contains("upload"))
+                    {
+                        uploadfile();
+                    }
+                    else if (voice.contains("list")||voice.contains("Show"))
+                    {
+                        getallfiles();
+                    }
+                    else
+                    {
+                        textToSpeech.speak("Error",TextToSpeech.QUEUE_FLUSH,null);
+                    }
+                }
+                else
+                {
+                    textToSpeech.speak("No Text",TextToSpeech.QUEUE_FLUSH,null);
+                }
             }
         }
         if(requestCode==300)
@@ -182,12 +213,23 @@ public class MainActivity extends AppCompatActivity {
     }
     private void getallfiles()
     {
+        ArrayList<String> names=new ArrayList<>();
+        names.clear();
         storageReference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
                 for(StorageReference s:listResult.getItems())
                 {
-                    Log.i("file",s.getName());
+                    names.add(s.getName().toString());
+                }
+                for(String e:names)
+                {
+                    textToSpeech.speak(e,TextToSpeech.QUEUE_FLUSH,null);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -199,13 +241,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onDestroy() {
         if(textToSpeech!=null)
         {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
-        super.onPause();
+        super.onDestroy();
     }
 
 }
